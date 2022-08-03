@@ -52,9 +52,34 @@ const mostBlogs = (blogs) => {
   return { author: maxAuthor, blogs: maxBlogs };
 };
 
+const mostLikes = (blogs) => {
+  if (blogs.length === 0) {
+    return 0;
+  }
+
+  const blogsByAuthors = _.groupBy(blogs, 'author');
+  let mostLikes = 0;
+  let mostLikedAuthor = '';
+
+  for(const name in blogsByAuthors) {
+    const reducer = (previousValue, currentValue) => {
+      return previousValue + currentValue.likes;
+    };
+
+    const sumOfLikes = blogsByAuthors[name].reduce(reducer, 0);
+
+    if(sumOfLikes > mostLikes) {
+      mostLikes = sumOfLikes;
+      mostLikedAuthor = name;
+    }
+  }
+  return { author: mostLikedAuthor, likes: mostLikes };
+};
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 };
